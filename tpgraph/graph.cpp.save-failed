@@ -150,53 +150,22 @@ void visite(Graph g, std::vector<Sommet *> * sgris, std::vector<Sommet *> * snoi
 
 
 void parcoursDijkstra(Graph g, Sommet * s){
-
     std::vector<Sommet *> sgris;
     std::vector<Sommet *> snoir;
     std::vector<Sommet *> sblanc;
 
     std::vector<Pair *> PCD;
 
-    sgris.push_back(s);
+    std::vector<Sommet*> successeur;
+    successeur.push_back(voisinNord(g,s->i,s->j));
+    successeur.push_back(voisinOuest(g,s->i,s->j));
+    successeur.push_back(voisinEst(g,s->i,s->j));
+    successeur.push_back(voisinSud(g,s->i,s->j));
 
-    for(Sommet * u : sgris){
-        if(std::find(snoir->begin(), snoir->end(), u)==snoir->end()){
-            std::vector<Sommet*> successeur;
-            successeur.push_back(voisinNord(g,u->i,u->j));
-            successeur.push_back(voisinOuest(g,u->i,u->j));
-            successeur.push_back(voisinEst(g,u->i,u->j));
-            successeur.push_back(voisinSud(g,u->i,u->j));
-
-            for(Sommet * v : successeur){
-                if(v != NULL && std::find(snoir->begin(), snoir->end(), v)==snoir->end()){
-                    int dist = sqrt(1+sqrt(s->h-v->h));
-                    if(std::find(sgris->begin(), sgris->end(), v)==sgris->end()){
-                        Pair p;
-                        p.dist=dist;
-                        p.sommet=v;
-                        p.pred=s;
-                        PCD.push_back(p);
-                        sgris.push_back(v);
-                    }
-                    else{
-                        for(unsigned int i=0;i<PCD.size();i++){
-                            if(PCD[i].sommet==v && PCD[i].dist>dist)
-                                PCD[i].dist=dist;
-                                PCD[i].pred=s;
-                        }
-                    }
-                }
-            }
-            snoir.push_back(u);
-        }
-    }
-
-
-
-    for(unsigned int i=0;i<g.sommets.size();i++ ){
+     for(unsigned int i=0;i<g.sommets.size();i++ ){
         Sommet * v = g.sommets[i];
         if(v != NULL){
-            PCD[i]->dist=
+            PCD[i]->dist=sqrt(1+sqrt(s->h-v->h));
             if(PCD[i]->dist==std::numeric_limits<double>::infinity()){
                 PCD[i]->pred=0;
                 sblanc.push_back(v);
