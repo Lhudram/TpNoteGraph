@@ -1,0 +1,15 @@
+# depslib dependency file v1.0
+1544023637 source:\\teraetu\homeetu\p1809392\desktop\tp info\c++\tpgraph\main.cpp
+	<iostream>
+	<fstream>
+	"graph.h"
+
+1544023346 \\teraetu\homeetu\p1809392\desktop\tp info\c++\tpgraph\graph.h
+	<vector>
+	<iostream>
+
+1544024483 source:\\teraetu\homeetu\p1809392\desktop\tp info\c++\tpgraph\graph.cpp
+	"graph.h"
+	<iostream>
+	<algorithm>
+
