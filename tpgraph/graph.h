@@ -9,7 +9,7 @@ struct _Sommet{
 typedef struct _Sommet Sommet;
 
 struct _Pair{
-    double dist;
+    int dist;
     Sommet * pred;
 };
 typedef struct _Pair Pair;
@@ -45,6 +45,8 @@ void affichageGraph(Graph g);
 
 void parcoursProfondeur(Graph g, Sommet * s, bool postfixe);
 void visite(Graph g, std::vector<Sommet *> * sgris, std::vector<Sommet *> * snoir, Sommet * u);
+
+void distanceSommet(Graph g, Sommet * s,std::vector<Pair> * PCD,std::vector<Sommet *> * sgris);
 void parcoursDijkstra(Graph g, Sommet * s);
 
 

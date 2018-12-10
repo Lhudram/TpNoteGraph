@@ -31,9 +31,7 @@ void ajouterSommet(Graph * g, int h, int i, int j){
 }
 
 Sommet * returnSommet(Graph g, int i, int j){
-    if(g.sommets[i*g.nbcolonne+j]!=NULL)
-        return g.sommets[i*g.nbcolonne+j];
-    return NULL;
+    return g.sommets[i*g.nbcolonne+j];
 }
 
 void modifHauteur(Graph * g, int newh, int i, int j){
@@ -50,24 +48,20 @@ int returnHauteur(Graph g, int i, int j){
 
 
 Sommet * voisinNord(Graph g, int i, int j){
-    if(i!=0 && g.sommets[(i-1)*g.nbcolonne+j]!=NULL)
+    if(i!=0)
         return g.sommets[(i-1)*g.nbcolonne+j];
-    return NULL;
 }
 Sommet * voisinSud(Graph g, int i, int j){
-    if(i+1<g.nbligne && g.sommets[(i+1)*g.nbcolonne+j]!=NULL)
+    if(i+1<g.nbligne)
         return g.sommets[(i+1)*g.nbcolonne+j];
-    return NULL;
 }
 Sommet * voisinEst(Graph g, int i, int j){
-    if(j+1<g.nbcolonne && g.sommets[i*g.nbcolonne+(j+1)]!=NULL)
+    if(j+1<g.nbcolonne)
         return g.sommets[i*g.nbcolonne+(j+1)];
-    return NULL;
 }
 Sommet * voisinOuest(Graph g, int i, int j){
-    if(j!=0 && g.sommets[i*g.nbcolonne+(j-1)]!=NULL)
-        return g.sommets[i*g.nbcolonne+(j-1)];
-    return NULL;
+    if(j!=0)
+        return g.sommets[i*g.nbcolonne+(j-1)];;
 }
 
 void affichageGraph(Graph g){
@@ -148,53 +142,41 @@ void visite(Graph g, std::vector<Sommet *> * sgris, std::vector<Sommet *> * snoi
     snoir->push_back(u);
 }
 
-
-void parcoursDijkstra(Graph g, Sommet * s){
-    std::vector<Sommet *> sgris;
-    std::vector<Sommet *> snoir;
-    std::vector<Sommet *> sblanc;
-
-    std::vector<Pair *> PCD;
-
+void distanceSommet(Graph g, Sommet * s,std::vector<Pair> * PCD,std::vector<Sommet *> * sgris){
     std::vector<Sommet*> successeur;
     successeur.push_back(voisinNord(g,s->i,s->j));
     successeur.push_back(voisinOuest(g,s->i,s->j));
     successeur.push_back(voisinEst(g,s->i,s->j));
     successeur.push_back(voisinSud(g,s->i,s->j));
 
-     for(unsigned int i=0;i<g.sommets.size();i++ ){
-        Sommet * v = g.sommets[i];
-        if(v != NULL){
-            PCD[i]->dist=sqrt(1+sqrt(s->h-v->h));
-            if(PCD[i]->dist==std::numeric_limits<double>::infinity()){
-                PCD[i]->pred=0;
-                sblanc.push_back(v);
-            }
-            else{
-                PCD[i]->pred=s;
-                sgris.push_back(v);
-            }
-        }
-     }
-     snoir.push_back(s);
+    std::vector<Pair> * p;
+    p[0]->dist=0;
 
-    while(sgris.size()!=0){
-        double minimum = std::numeric_limits<double>::infinity();
-        Sommet * sminimum;
-        for(Sommet * v : sgris){
-            if(PCD[v].dist<minimum){
-                minimum=PCD[v].dist;
-                sminimum=v;
-            }
-        }
-        for(Sommet * s : g.sommets){
-            if(s!=NULL){
-                if(std::find(sgris->begin(), sgris->end(), s)==sgris->end() && std::find(snoir->begin(), snoir->end(), s)==snoir->end()){
-                    sgris.push_back(s);
-
-                }
+    for(Sommet * v : successeur){
+        if(v!=NULL){
+            if(std::find(sgris->begin(), sgris->end(), v)==sgris->end() || (sqrt(1+sqrt(s->h-v->h))+PCD[s->i*g.nbcolonne+s->j].dist)<PCD[v->i*g.nbcolonne+v->j].dist ){
+                *(PCD[v->i*g->nbcolonne+v->j])->dist=sqrt(1+sqrt(s->h-v->h))+PCD[s->i*g->nbcolonne+s->j]->dist;
+                PCD[v->i*g->nbcolonne+v->j].pred=s;
+                sgris->push_back(v);
+                distanceSommet(g, v, PCD, sgris);
             }
         }
     }
+}
+
+void parcoursDijkstra(Graph g, Sommet * s){
+
+    std::vector<Sommet *> sgris;
+
+    std::vector<Pair> PCD;
+    PCD.resize(g.nbligne*g.nbcolonne);
+    for(unsigned int i = 0; i<PCD.size();i++)
+       PCD[i]=NULL;
+
+    sgris.push_back(s);
+    PCD[s->i*g.nbcolonne+s->j].dist=0;
+    PCD[s->i*g.nbcolonne+s->j].pred=0;
+
+    distanceSommet(g, s, &PCD, &sgris);
 
 }
