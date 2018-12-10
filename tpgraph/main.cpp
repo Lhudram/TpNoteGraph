@@ -37,6 +37,13 @@ int main()
     parcoursProfondeur(g,returnSommet(g,0,3),true);
     std::cout<<std::endl;
     parcoursProfondeur(g,returnSommet(g,0,3),false);
+    std::vector<Pair> PCDResult = parcoursDijkstra(g,returnSommet(g,0,0));
+    for(unsigned int i = 0; i<PCDResult.size();i++){
+        if(PCDResult[i].pred!=NULL){
+            std::cout<<"Le sommet "<<g.sommets[i]->h<<" est a distance "<<PCDResult[i].dist<<" de "<<PCDResult[i].pred->h<<std::endl;
+        }
+    }
 
+    voronoi(g);
 
 }

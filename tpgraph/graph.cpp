@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <queue>
 #include <limits>
+#include <math.h>
 
 void initialisation(Graph * g){
     g->nbligne = 0;
@@ -118,11 +119,13 @@ void parcoursProfondeur(Graph g, Sommet * s, bool postfixe){
             for(Sommet * v : snoir){
                 std::cout<<v->h<<" ";
             }
+            std::cout<<std::endl;
         }
         else{
             for(Sommet * v : sgris){
                 std::cout<<v->h<<" ";
             }
+            std::cout<<std::endl;
         }
     }
 
@@ -155,17 +158,21 @@ void distanceSommet(Graph g, Sommet * s,std::vector<Pair> * PCD,std::vector<Somm
 
     for(Sommet * v : successeur){
         if(v!=NULL){
-            if(std::find(sgris->begin(), sgris->end(), v)==sgris->end() || sqrt(1+sqrt(s->h-v->h))+(*PCD)[s->i*g.nbcolonne+s->j].dist<(*PCD)[v->i*g.nbcolonne+v->j].dist){
-                (*PCD)[v->i*g.nbcolonne+v->j].dist=sqrt(1+sqrt(s->h-v->h))+(*PCD)[s->i*g.nbcolonne+s->j].dist;
-                (*PCD)[v->i*g.nbcolonne+v->j].pred=s;
+            if(std::find(sgris->begin(), sgris->end(), v)==sgris->end() ){
+                (*PCD)[v->i*g.nbcolonne+v->j].dist=sqrt(1+pow(s->h-v->h,2))+(*PCD)[s->i*g.nbcolonne+s->j].dist;
+                (*PCD)[v->i*g.nbcolonne+v->j].pred=(*PCD)[s->i*g.nbcolonne+s->j].pred;
                 sgris->push_back(v);
                 distanceSommet(g, v, PCD, sgris);
+            }
+            else{
+                if(sqrt(1+pow(s->h-v->h,2))+(*PCD)[s->i*g.nbcolonne+s->j].dist<(*PCD)[v->i*g.nbcolonne+v->j].dist && (*PCD)[v->i*g.nbcolonne+v->j].dist!=NULL)
+                    (*PCD)[v->i*g.nbcolonne+v->j].dist=sqrt(1+pow(s->h-v->h,2))+(*PCD)[s->i*g.nbcolonne+s->j].dist;
             }
         }
     }
 }
 
-void parcoursDijkstra(Graph g, Sommet * s){
+std::vector<Pair> parcoursDijkstra(Graph g, Sommet * s){
 
     std::vector<Sommet *> sgris;
 
@@ -178,8 +185,47 @@ void parcoursDijkstra(Graph g, Sommet * s){
 
     sgris.push_back(s);
     PCD[s->i*g.nbcolonne+s->j].dist=0;
-    PCD[s->i*g.nbcolonne+s->j].pred=0;
+    PCD[s->i*g.nbcolonne+s->j].pred=s;
+    distanceSommet(g,s,&PCD,&sgris);
 
-    distanceSommet(g, s, &PCD, &sgris);
+    for(Sommet * u : g.sommets){
+        if(std::find(sgris.begin(), sgris.end(), u)==sgris.end() && u != NULL){
+            PCD[u->i*g.nbcolonne+u->j].dist=0;
+            PCD[u->i*g.nbcolonne+u->j].pred=u;
+            distanceSommet(g,u,&PCD,&sgris);
+        }
+    }
+    return PCD;
+}
+
+
+void voronoi(Graph g){
+
+    std::vector<Sommet *> voronoi;
+    voronoi.resize(g.nbligne*g.nbcolonne);
+    for(unsigned int i = 0; i<voronoi.size();i++)
+        voronoi[i]=NULL;
+
+    for(Sommet * s : g.sommets){
+        double distmin = std::numeric_limits<double>::infinity();
+        if(s != NULL){
+            std::vector<Pair> PCD = parcoursDijkstra(g,s);
+            for(unsigned int i = 0; i<PCD.size();i++){
+                if(std::find(g.sites.begin(), g.sites.end(), g.sommets[i])!=g.sites.end() && PCD[i].pred!=NULL && PCD[i].pred==s){
+                    if(distmin>PCD[i].dist){
+                            distmin = PCD[i].dist;
+                            voronoi[s->i*g.nbcolonne+s->j]=g.sommets[i];
+                    }
+                }
+            }
+        }
+    }
+
+    for(unsigned int i=0;i<voronoi.size();i++ ){
+        if(voronoi[i] != NULL ){
+            std::cout<<"Le sommet "<<g.sommets[i]->h<<" est rattache a "<<voronoi[i]->h<<std::endl;
+        }
+    }
+    std::cout<<"Les autres sommets ne sont rattache a aucun site"<<std::endl;
 
 }
