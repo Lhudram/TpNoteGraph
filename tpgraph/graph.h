@@ -9,8 +9,7 @@ struct _Sommet{
 typedef struct _Sommet Sommet;
 
 struct _Pair{
-    int dist;
-    Sommet * sommet;
+    double dist;
     Sommet * pred;
 };
 typedef struct _Pair Pair;
