@@ -4,6 +4,8 @@
 	<fstream>
 	"graph.h"
 
+1544472437 
+
 1544023346 \\teraetu\homeetu\p1809392\desktop\tp info\c++\tpgraph\graph.h
 	<vector>
 	<iostream>
@@ -12,6 +14,8 @@
 	"graph.h"
 	<iostream>
 	<algorithm>
+
+1544024483 >
 
 1544023637 source:\\teraetu\homeetu\p1809392\desktop\tp info\c++\tpnotegraph\tpgraph\main.cpp
 	<iostream>
@@ -32,6 +36,23 @@
 	<iostream>
 
 1544476468 source:g:\workspace\tpnotegraph\tpgraph\graph.cpp
+	"graph.h"
+	<iostream>
+	<algorithm>
+	<queue>
+	<limits>
+	<math.h>
+
+1544523066 source:/home/etu/p1809392/Desktop/TP INFO/c++/tpgraph/main.cpp
+	<iostream>
+	<fstream>
+	"graph.h"
+
+1544520614 /home/etu/p1809392/Desktop/TP INFO/c++/tpgraph/graph.h
+	<vector>
+	<iostream>
+
+1544523258 source:/home/etu/p1809392/Desktop/TP INFO/c++/tpgraph/graph.cpp
 	"graph.h"
 	<iostream>
 	<algorithm>

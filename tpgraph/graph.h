@@ -51,3 +51,4 @@ std::vector<Pair> parcoursDijkstra(Graph g, Sommet * s);
 
 
 void voronoi(Graph g);
+void afficheVoronoi(Graph g,std::vector<Sommet *> voronoi);

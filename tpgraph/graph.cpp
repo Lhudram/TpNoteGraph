@@ -102,7 +102,7 @@ void parcoursProfondeur(Graph g, Sommet * s, bool postfixe){
 
     for(unsigned int i=0;i<g.sommets.size();i++ ){
         Sommet * u = g.sommets[i];
-        if(u==s)
+        if(u==s && s!=NULL)
             position = i;
     }
 
@@ -183,16 +183,18 @@ std::vector<Pair> parcoursDijkstra(Graph g, Sommet * s){
        PCD[i].pred=NULL;
     }
 
-    sgris.push_back(s);
-    PCD[s->i*g.nbcolonne+s->j].dist=0;
-    PCD[s->i*g.nbcolonne+s->j].pred=s;
-    distanceSommet(g,s,&PCD,&sgris);
+    if(s!=NULL){
+        sgris.push_back(s);
+        PCD[s->i*g.nbcolonne+s->j].dist=0;
+        PCD[s->i*g.nbcolonne+s->j].pred=s;
+        distanceSommet(g,s,&PCD,&sgris);
 
-    for(Sommet * u : g.sommets){
-        if(std::find(sgris.begin(), sgris.end(), u)==sgris.end() && u != NULL){
-            PCD[u->i*g.nbcolonne+u->j].dist=0;
-            PCD[u->i*g.nbcolonne+u->j].pred=u;
-            distanceSommet(g,u,&PCD,&sgris);
+        for(Sommet * u : g.sommets){
+            if(std::find(sgris.begin(), sgris.end(), u)==sgris.end() && u != NULL){
+                PCD[u->i*g.nbcolonne+u->j].dist=0;
+                PCD[u->i*g.nbcolonne+u->j].pred=u;
+                distanceSommet(g,u,&PCD,&sgris);
+            }
         }
     }
     return PCD;
@@ -221,11 +223,27 @@ void voronoi(Graph g){
         }
     }
 
-    for(unsigned int i=0;i<voronoi.size();i++ ){
-        if(voronoi[i] != NULL ){
-            std::cout<<"Le sommet "<<g.sommets[i]->h<<" est rattache a "<<voronoi[i]->h<<std::endl;
-        }
-    }
-    std::cout<<"Les autres sommets ne sont rattache a aucun site"<<std::endl;
+    afficheVoronoi(g,voronoi);
 
+}
+
+void afficheVoronoi(Graph g,std::vector<Sommet *> voronoi){for(int i = 0;i<g.nbligne;i++){
+        for(int j = 0;j<g.nbcolonne;j++){
+            std::cout<<"[";
+            if(g.sommets[i*g.nbcolonne+j]!=NULL){
+                if(voronoi[i*g.nbcolonne+j]!=NULL)
+                    std::cout << "\033[1;3"<<(voronoi[i*g.nbcolonne+j]->h)%7<<"m";
+                if(std::find(g.sites.begin(), g.sites.end(), g.sommets[i*g.nbcolonne+j])!=g.sites.end())
+                    std::cout<<"!";
+                std::cout<<g.sommets[i*g.nbcolonne+j]->h;
+                if(voronoi[i*g.nbcolonne+j]!=NULL)
+                std::cout<< "\033[0m";
+            }
+            if(j!=g.nbcolonne-1)
+                std::cout<<"]--";
+            else
+                std::cout<<"]";
+        }
+        std::cout<<std::endl;
+    }
 }

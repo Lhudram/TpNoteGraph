@@ -34,15 +34,27 @@ int main()
     TestFile.close();
 
     affichageGraph(g);
-    parcoursProfondeur(g,returnSommet(g,0,3),true);
+
     std::cout<<std::endl;
+
+    std::cout<<"Parcours en profondeur postfixe"<<std::endl;
+    parcoursProfondeur(g,returnSommet(g,0,3),true);
+    std::cout<<"Parcours en profondeur prefixe"<<std::endl;
     parcoursProfondeur(g,returnSommet(g,0,3),false);
+    parcoursProfondeur(g,returnSommet(g,0,1),false);
+
+    std::cout<<std::endl;
+
+    std::vector<Pair> PCDResultfaux = parcoursDijkstra(g,returnSommet(g,0,1));
     std::vector<Pair> PCDResult = parcoursDijkstra(g,returnSommet(g,0,0));
     for(unsigned int i = 0; i<PCDResult.size();i++){
         if(PCDResult[i].pred!=NULL){
             std::cout<<"Le sommet "<<g.sommets[i]->h<<" est a distance "<<PCDResult[i].dist<<" de "<<PCDResult[i].pred->h<<std::endl;
         }
     }
+
+
+    std::cout<<std::endl;
 
     voronoi(g);
 
